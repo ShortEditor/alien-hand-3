@@ -58,9 +58,9 @@ def book():
     phone = request.form['phone']
     num_tickets = int(request.form['num_tickets'])
     
-    # Generate ticket numbers
-    ticket_numbers = list(range(current_ticket_number, current_ticket_number + num_tickets))
-    current_ticket_number += num_tickets
+    # Generate ticket numbers in decreasing order
+    ticket_numbers = list(range(current_ticket_number, current_ticket_number - num_tickets, -1))
+    current_ticket_number -= num_tickets
     
     # Create payment QR code
     amount = num_tickets * 200  # Assuming each ticket costs 200
