@@ -8,17 +8,12 @@ import os
 import json
 from io import BytesIO
 from datetime import datetime, timedelta
-import requests
 
 app = Flask(__name__)
-app.secret_key = 'alien_hand_3_secret_key'
+app.secret_key = 'alien_hand_3_secret_key'  # Added secret key for session
 
 # Global variables
 current_ticket_number = 100
-
-# Telegram configuration
-TELEGRAM_BOT_TOKEN = '7848973864:AAHl5y2gDQKsTz4ibjCk_EtUfAimGyOG9ME'
-TELEGRAM_CHAT_ID = '5518104198'
 
 def load_bookings():
     try:
@@ -30,35 +25,6 @@ def load_bookings():
 def save_bookings(bookings):
     with open('bookings.json', 'w') as f:
         json.dump(bookings, f)
-
-def send_telegram_notification(name, email, phone, num_tickets, ticket_numbers, amount):
-    try:
-        message = f"""
-🎫 New Ticket Booking!
-
-👤 Customer Details:
-- Name: {name}
-- Email: {email}
-- Phone: {phone}
-
-🎟️ Booking Details:
-- Number of Tickets: {num_tickets}
-- Ticket Numbers: {', '.join(map(str, ticket_numbers))}
-- Total Amount: ₹{amount}
-
-⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-"""
-        
-        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-        data = {
-            "chat_id": TELEGRAM_CHAT_ID,
-            "text": message,
-            "parse_mode": "HTML"
-        }
-        response = requests.post(url, data=data)
-        print("Telegram notification sent successfully")
-    except Exception as e:
-        print(f"Failed to send Telegram notification: {e}")
 
 @app.route('/')
 def home():
@@ -122,9 +88,6 @@ def book():
         'movie': 'Alien Hand 3'
     }
     save_bookings(bookings)
-    
-    # Send Telegram notification
-    send_telegram_notification(name, email, phone, num_tickets, ticket_numbers, amount)
     
     return render_template('payment.html', 
                          qr_path=qr_path, 
