@@ -63,7 +63,7 @@ def book():
     current_ticket_number -= num_tickets
     
     # Create payment QR code
-    amount = num_tickets * 200  # Assuming each ticket costs 200
+    amount = num_tickets * 100  # Changed ticket cost from 200 to 100
     upi_payment_string = f"upi://pay?pa=9160068402@ybl&pn=MovieTickets&am={amount}&cu=INR"
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
     qr.add_data(upi_payment_string)
@@ -108,7 +108,7 @@ def verify_payment():
     name = booking.get('name', 'Guest')
     phone = booking.get('phone', '')
     ticket_numbers = booking.get('ticket_numbers', [])
-    amount = booking.get('amount', 200)
+    amount = booking.get('amount', 100)
     
     # Generate PDF ticket
     pdf_buffer = BytesIO()
