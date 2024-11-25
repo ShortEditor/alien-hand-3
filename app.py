@@ -166,10 +166,10 @@ def verify_payment():
         c.setFont("Helvetica", 10)
         
         y_pos -= 30
-        venue_details = [
-            "INOX Cinemas",
-            "GVK One Mall, Road No. 1",
-            "Banjara Hills, Hyderabad"
+               venue_details = [
+            "Aliens Theatre",
+            "Junction Road",
+            "Rajahmundry, Andhra Pradesh"
         ]
         
         for line in venue_details:
