@@ -89,18 +89,26 @@ def book():
     }
     save_bookings(bookings)
     
-    # Store email in session
-    session['current_email'] = email
-    
     return render_template('payment.html', 
                          qr_path=qr_path, 
                          amount=amount,
-                         email=email)
+                         email=email,
+                         name=name,
+                         phone=phone,
+                         ticket_numbers=ticket_numbers)
 
 @app.route('/verify_payment', methods=['POST'])
 def verify_payment():
     email = request.form['email']
     transaction_id = request.form['transaction_id']
+    
+    # Load booking details
+    bookings = load_bookings()
+    booking = bookings.get(email, {})
+    name = booking.get('name', 'Guest')
+    phone = booking.get('phone', '')
+    ticket_numbers = booking.get('ticket_numbers', [])
+    amount = booking.get('amount', 200)
     
     # Generate PDF ticket
     pdf_buffer = BytesIO()
@@ -140,7 +148,8 @@ def verify_payment():
         ("Show Date", datetime.now().strftime('%d %b %Y')),
         ("Show Time", "7:30 PM"),
         ("Seat Type", "PREMIUM"),
-        ("Amount Paid", f"₹200")
+        ("Amount Paid", f"₹{amount}"),
+        ("Ticket Numbers", ", ".join(map(str, ticket_numbers)))
     ]
     
     for label, value in details:
@@ -158,9 +167,9 @@ def verify_payment():
     
     y_pos -= 30
     customer_details = [
-        ("Name", request.form.get('name', 'Guest')),
+        ("Name", name),
         ("Email", email),
-        ("Phone", request.form.get('phone', ''))
+        ("Phone", phone)
     ]
     
     for label, value in customer_details:
